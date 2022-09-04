@@ -10,9 +10,31 @@ canvas.height = 576
 ctx.fillStyle = 'white'
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-// draws the pixel map into the canvas
+// refs the map image
 const image = new Image()
 image.src = './images/pokeclone-map.png'
+
+// ref the player sprite
+const playerImage = new Image()
+playerImage.src = './images/playerDown.png'
+
 image.onload = () => {
-  ctx.drawImage(image, -50, -180)
+  // draws the map on the canvas
+  ctx.drawImage(image, -15, -220)
+
+  // draws the player sprite and cropes the sprite sheet
+  ctx.drawImage(
+    playerImage,
+    // cropping (x start, y start, x to, y to )
+    0,
+    0,
+    playerImage.width / 4,
+    playerImage.height,
+    // location placement of the sprite
+    canvas.width / 2 - playerImage.width / 4 / 2,
+    canvas.height / 2 - playerImage.height / 2,
+    // image size after crop
+    playerImage.width / 4,
+    playerImage.height
+  )
 }
