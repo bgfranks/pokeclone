@@ -6,10 +6,6 @@ const ctx = canvas.getContext('2d')
 canvas.width = 1024
 canvas.height = 576
 
-// adds the canvas background to the hmtl
-ctx.fillStyle = 'white'
-ctx.fillRect(0, 0, canvas.width, canvas.height)
-
 // refs the map image
 const image = new Image()
 image.src = './images/pokeclone-map.png'
@@ -18,6 +14,58 @@ image.src = './images/pokeclone-map.png'
 const playerImage = new Image()
 playerImage.src = './images/playerDown.png'
 
+// creates the offset for the map positioning
+const offset = {
+  x: -15,
+  y: -220,
+}
+
+// empty array to store collisions map
+const collisionsMap = []
+
+// creates a 2d array by slicing the collision array
+// 70 = the number of tiles in the row of the map
+// the nested array is each row of the map
+for (let i = 0; i < collisions.length; i += 70) {
+  collisionsMap.push(collisions.slice(i, 70 + i))
+}
+
+// boundary constructor
+class Boundary {
+  static width = 48
+  static height = 48
+  constructor({ position, width, height }) {
+    this.position = position
+    this.width = 48
+    this.height = 48
+  }
+
+  draw() {
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+}
+
+// stores the boundaries block
+const boundaries = []
+
+// loops through the row intially then loops through the nested array
+// i is the index of the main array and j is the for the nested array index
+// creates a new boundary based on if the data was 1025
+// 1025 is where a boundary block was placed in tiled
+collisionsMap.forEach((row, i) => {
+  row.forEach((symbol, j) => {
+    if (symbol === 1025) {
+      boundaries.push(
+        new Boundary({
+          position: {
+            x: j * Boundary.width + offset.x,
+            y: i * Boundary.height + offset.y,
+          },
+        })
+      )
+    }
+  })
+})
 // sprite constructor
 class Sprite {
   constructor({ position, velocity, image }) {
@@ -33,8 +81,8 @@ class Sprite {
 
 const background = new Sprite({
   position: {
-    x: -15,
-    y: -220,
+    x: offset.x,
+    y: offset.y,
   },
   image: image,
 })
@@ -62,6 +110,11 @@ function animate() {
 
   // draws the map on the canvas
   background.draw()
+
+  // draws out the collision boundary blocks
+  boundaries.forEach((boundary) => {
+    boundary.draw()
+  })
 
   // draws the player sprite and cropes the sprite sheet
   ctx.drawImage(
