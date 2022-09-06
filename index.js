@@ -153,6 +153,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 
 // animation loop
 function animate() {
+  let moving = true
   // creates an infite callback animate loop
   window.requestAnimationFrame(animate)
 
@@ -162,32 +163,107 @@ function animate() {
   // draws out the collision boundary blocks
   boundaries.forEach((boundary) => {
     boundary.draw()
-
-    // checks if the player is colliding with the boundary block
-    if (rectangularCollision({ rectangle1: player, rectangle2: boundary })) {
-      console.log('colliding')
-    }
   })
 
   // draws the player
   player.draw()
 
   if (keys.w.pressed && lastKeyPressed === 'w') {
-    moveables.forEach((moveable) => {
-      moveable.position.y += 3
-    })
+    // loops through the boundaries to check for collision when moving up
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i]
+
+      // adds 3 to see the collision coming to spot the play before stepping on the block
+      // 3 stands for the player movement
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {
+            ...boundary,
+            position: { x: boundary.position.x, y: boundary.position.y + 3 },
+          },
+        })
+      ) {
+        moving = false
+        break
+      }
+    }
+    if (moving)
+      moveables.forEach((moveable) => {
+        moveable.position.y += 3
+      })
   } else if (keys.a.pressed && lastKeyPressed === 'a') {
-    moveables.forEach((moveable) => {
-      moveable.position.x += 3
-    })
+    // loops through the boundaries to check for collision when moving up
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i]
+
+      // adds 3 to see the collision coming to spot the play before stepping on the block
+      // 3 stands for the player movement
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {
+            ...boundary,
+            position: { x: boundary.position.x + 3, y: boundary.position.y },
+          },
+        })
+      ) {
+        moving = false
+        break
+      }
+    }
+    if (moving)
+      moveables.forEach((moveable) => {
+        moveable.position.x += 3
+      })
   } else if (keys.d.pressed && lastKeyPressed === 'd') {
-    moveables.forEach((moveable) => {
-      moveable.position.x -= 3
-    })
+    // loops through the boundaries to check for collision when moving up
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i]
+
+      // adds 3 to see the collision coming to spot the play before stepping on the block
+      // 3 stands for the player movement
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {
+            ...boundary,
+            position: { x: boundary.position.x - 3, y: boundary.position.y },
+          },
+        })
+      ) {
+        moving = false
+        break
+      }
+    }
+    if (moving)
+      moveables.forEach((moveable) => {
+        moveable.position.x -= 3
+      })
   } else if (keys.s.pressed && lastKeyPressed === 's') {
-    moveables.forEach((moveable) => {
-      moveable.position.y -= 3
-    })
+    // loops through the boundaries to check for collision when moving up
+    for (let i = 0; i < boundaries.length; i++) {
+      const boundary = boundaries[i]
+
+      // adds 3 to see the collision coming to spot the play before stepping on the block
+      // 3 stands for the player movement
+      if (
+        rectangularCollision({
+          rectangle1: player,
+          rectangle2: {
+            ...boundary,
+            position: { x: boundary.position.x, y: boundary.position.y - 3 },
+          },
+        })
+      ) {
+        moving = false
+        break
+      }
+    }
+    if (moving)
+      moveables.forEach((moveable) => {
+        moveable.position.y -= 3
+      })
   }
 }
 
