@@ -17,7 +17,7 @@ playerImage.src = './images/playerDown.png'
 // creates the offset for the map positioning
 const offset = {
   x: -15,
-  y: -220,
+  y: -230,
 }
 
 // empty array to store collisions map
@@ -68,17 +68,38 @@ collisionsMap.forEach((row, i) => {
 })
 // sprite constructor
 class Sprite {
-  constructor({ position, velocity, image }) {
+  constructor({ position, velocity, image, frames = { max: 1 } }) {
     this.position = position
     this.image = image
+    this.frames = frames
+
+    // calculates the image width and heigh after it as loaded
+    this.image.onload = () => {
+      this.width = this.image.width / this.frames.max
+      this.height = this.image.height
+    }
   }
 
   draw() {
-    // draws the sprite class position
-    ctx.drawImage(this.image, this.position.x, this.position.y)
+    // handles drawing the image and cropping if needed
+    ctx.drawImage(
+      this.image,
+      // cropping (x start, y start, x to, y to )
+      0,
+      0,
+      this.image.width / this.frames.max,
+      this.image.height,
+      // image placement
+      this.position.x,
+      this.position.y,
+      // image size after crop
+      this.image.width / this.frames.max,
+      this.image.height
+    )
   }
 }
 
+// stores the background image
 const background = new Sprite({
   position: {
     x: offset.x,
@@ -86,6 +107,20 @@ const background = new Sprite({
   },
   image: image,
 })
+
+// stores the player sprite
+const player = new Sprite({
+  position: {
+    x: canvas.width / 2 - 192 / 4 / 2,
+    y: canvas.height / 2 - 68 / 2,
+  },
+  image: playerImage,
+  frames: {
+    max: 4,
+  },
+})
+
+console.log(player.frames.max)
 
 // stores key pressed
 const keys = {
@@ -103,6 +138,19 @@ const keys = {
   },
 }
 
+// array that stores the moveable objects in the game
+const moveables = [background, ...boundaries]
+
+// function that calculates if the first arg is colliding with the second arg
+function rectangularCollision({ rectangle1, rectangle2 }) {
+  return (
+    rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
+    rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
+    rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
+    rectangle1.position.y + rectangle1.height >= rectangle2.position.y
+  )
+}
+
 // animation loop
 function animate() {
   // creates an infite callback animate loop
@@ -114,28 +162,33 @@ function animate() {
   // draws out the collision boundary blocks
   boundaries.forEach((boundary) => {
     boundary.draw()
+
+    // checks if the player is colliding with the boundary block
+    if (rectangularCollision({ rectangle1: player, rectangle2: boundary })) {
+      console.log('colliding')
+    }
   })
 
-  // draws the player sprite and cropes the sprite sheet
-  ctx.drawImage(
-    playerImage,
-    // cropping (x start, y start, x to, y to )
-    0,
-    0,
-    playerImage.width / 4,
-    playerImage.height,
-    // location placement of the sprite
-    canvas.width / 2 - playerImage.width / 4 / 2,
-    canvas.height / 2 - playerImage.height / 2,
-    // image size after crop
-    playerImage.width / 4,
-    playerImage.height
-  )
+  // draws the player
+  player.draw()
 
-  if (keys.w.pressed && lastKeyPressed === 'w') background.position.y += 3
-  else if (keys.a.pressed && lastKeyPressed === 'a') background.position.x += 3
-  else if (keys.d.pressed && lastKeyPressed === 'd') background.position.x -= 3
-  else if (keys.s.pressed && lastKeyPressed === 's') background.position.y -= 3
+  if (keys.w.pressed && lastKeyPressed === 'w') {
+    moveables.forEach((moveable) => {
+      moveable.position.y += 3
+    })
+  } else if (keys.a.pressed && lastKeyPressed === 'a') {
+    moveables.forEach((moveable) => {
+      moveable.position.x += 3
+    })
+  } else if (keys.d.pressed && lastKeyPressed === 'd') {
+    moveables.forEach((moveable) => {
+      moveable.position.x -= 3
+    })
+  } else if (keys.s.pressed && lastKeyPressed === 's') {
+    moveables.forEach((moveable) => {
+      moveable.position.y -= 3
+    })
+  }
 }
 
 animate()
