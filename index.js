@@ -15,8 +15,14 @@ const foregroundImage = new Image()
 foregroundImage.src = './images/pokeclone-foreground.png'
 
 // ref the player sprite
-const playerImage = new Image()
-playerImage.src = './images/playerDown.png'
+const playerDownImage = new Image()
+playerDownImage.src = './images/playerDown.png'
+const playerUpImage = new Image()
+playerUpImage.src = './images/playerUp.png'
+const playerLeftImage = new Image()
+playerLeftImage.src = './images/playerLeft.png'
+const playerRightImage = new Image()
+playerRightImage.src = './images/playerRight.png'
 
 // creates the offset for the map positioning
 const offset = {
@@ -79,9 +85,15 @@ const player = new Sprite({
     x: canvas.width / 2 - 192 / 4 / 2,
     y: canvas.height / 2 - 68 / 2,
   },
-  image: playerImage,
+  image: playerDownImage,
   frames: {
     max: 4,
+  },
+  sprites: {
+    up: playerUpImage,
+    down: playerDownImage,
+    left: playerLeftImage,
+    right: playerRightImage,
   },
 })
 
@@ -138,8 +150,10 @@ function animate() {
 
   player.moving = false
 
+  // handles the walking directions with WASD
   if (keys.w.pressed && lastKeyPressed === 'w') {
     player.moving = true
+    player.image = player.sprites.up
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -165,6 +179,7 @@ function animate() {
       })
   } else if (keys.a.pressed && lastKeyPressed === 'a') {
     player.moving = true
+    player.image = player.sprites.left
 
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
@@ -191,6 +206,7 @@ function animate() {
       })
   } else if (keys.d.pressed && lastKeyPressed === 'd') {
     player.moving = true
+    player.image = player.sprites.right
 
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
@@ -217,6 +233,7 @@ function animate() {
       })
   } else if (keys.s.pressed && lastKeyPressed === 's') {
     player.moving = true
+    player.image = player.sprites.down
 
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
