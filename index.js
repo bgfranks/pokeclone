@@ -136,7 +136,10 @@ function animate() {
   // draws the foreground of the map
   foreground.draw()
 
+  player.moving = false
+
   if (keys.w.pressed && lastKeyPressed === 'w') {
+    player.moving = true
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -161,6 +164,8 @@ function animate() {
         moveable.position.y += 3
       })
   } else if (keys.a.pressed && lastKeyPressed === 'a') {
+    player.moving = true
+
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -185,6 +190,8 @@ function animate() {
         moveable.position.x += 3
       })
   } else if (keys.d.pressed && lastKeyPressed === 'd') {
+    player.moving = true
+
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
@@ -209,6 +216,8 @@ function animate() {
         moveable.position.x -= 3
       })
   } else if (keys.s.pressed && lastKeyPressed === 's') {
+    player.moving = true
+
     // loops through the boundaries to check for collision when moving up
     for (let i = 0; i < boundaries.length; i++) {
       const boundary = boundaries[i]
