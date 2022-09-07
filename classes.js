@@ -1,10 +1,17 @@
 // sprite constructor
 class Sprite {
-  constructor({ position, velocity, image, frames = { max: 1 } }) {
+  constructor({
+    position,
+    velocity,
+    image,
+    sprites = [],
+    frames = { max: 1 },
+  }) {
     this.position = position
     this.image = image
     this.frames = { ...frames, val: 0, elapsed: 0 }
     this.moving = false
+    this.sprites = sprites
 
     // calculates the image width and heigh after it as loaded
     this.image.onload = () => {
